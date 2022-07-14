@@ -1,0 +1,108 @@
+body {
+  background-color: rgb(6, 20, 41);
+  background-image: url("./Images/UnderWater.jpg");
+}
+
+#buttons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+div.button {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  margin-top: -50px;
+  margin-left: -50px;
+  border-radius: 25%;
+  opacity: 0.5;
+}
+
+div.button[data-index="0"] {
+  top: -225px;
+  left: -225px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: green;
+}
+
+div.button[data-index="1"] {
+  top: -225px;
+  left: 225px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: red;
+}
+
+div.button[data-index="2"] {
+  top: 225px;
+  left: -225px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: yellow;
+}
+
+div.button[data-index="3"] {
+  top: 225px;
+  left: 225px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: orange;
+}
+
+div.button[data-index="4"] {
+  top: 325px;
+  left: 0px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: blue;
+}
+
+div.button[data-index="5"] {
+  top: 0px;
+  left: 325px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: darkturquoise;
+}
+
+div.button[data-index="6"] {
+  top: -325px;
+  left: 0;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: cornsilk;
+}
+
+div.button[data-index="7"] {
+  top: 0px;
+  left: -325px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: darkmagenta;
+}
+
+div.button[data-index="8"] {
+  top: -70px;
+  left: -725px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: rgb(221, 199, 99);
+}
+
+div.button[data-index="9"] {
+  top: 70px;
+  left: -525px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: rgb(221, 199, 99);
+}
+
+div.button[data-index="10"] {
+  top: -70px;
+  left: 525px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: rgb(221, 199, 99);
+}
+
+div.button[data-index="11"] {
+  top: 70px;
+  left: 725px;
+  background-image: url("./Icons/TestSheet.png");
+  background-color: rgb(221, 199, 99);
+}
+
+div.button.active {
+  opacity: 1;
+}
