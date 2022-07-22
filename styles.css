@@ -1,6 +1,10 @@
 body {
   background-color: rgb(6, 20, 41);
   background-image: url("./Images/UnderWater.jpg");
+  font-family: "Arial", "Lucida Console", monospace;
+  font-size: 4.6vmin;
+  background-color: black;
+  resize: none;
 }
 
 #buttons {
@@ -104,5 +108,36 @@ div.button[data-index="11"] {
 }
 
 div.button.active {
+  opacity: 1;
+}
+
+div.button.valid {
+  width: 200px;
+  height: 200px;
+  opacity: 1;
+}
+
+div.button.invalid {
+  opacity: 0;
+}
+
+#validate {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: auto;
+  height: 50px;
+  background-color: ivory;
+  opacity: 0.5;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+#validate.active {
+  opacity: 1;
+}
+
+#validate.active:hover {
+  background-color: darkorange;
   opacity: 1;
 }

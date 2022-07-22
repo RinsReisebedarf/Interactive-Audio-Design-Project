@@ -1,16 +1,28 @@
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audioContext = null;
 
-const sounds = ['Shield_01.mp3', 'Shield_02.mp3', 'Shield_03.mp3', 'Shield_04.mp3', 'Summoning_01.mp3', 'Summoning_02.mp3', 'Summoning_03.mp3', 'Summoning_04.mp3', 
-'Ambi1.mp3', 'Ambi2.mp3', 'Dolphin.mp3', 'Pfiff_Mix.mp3', 'Track1_Success', 'Track2_Successs', 'Track_Fail'];
+const validateButton = document.getElementById("validate");
+
+//const sounds = ['Shield_01.mp3', 'Shield_02.mp3', 'Shield_03.mp3', 'Shield_04.mp3', 'Summoning_01.mp3', 'Summoning_02.mp3', 'Summoning_03.mp3', 'Summoning_04.mp3', 
+//'Ambi1.mp3', 'Ambi2.mp3', 'Dolphin.mp3', 'Pfiff_Mix.mp3', 'Track1_Success.mp3', 'Track2_Success.mp3', 'Track_Fail.mp3'];
+
+const sounds = ['Track1_1.mp3', 'Track1_2.mp3', 'Track1_3.mp3', 'Track1_4.mp3', 'Track2_1.mp3', 'Track2_2.mp3', 'Track2_3.mp3', 'Track2_4.mp3', 
+'Ambi1.mp3', 'Ambi2.mp3', 'Dolphin.mp3', 'Pfiff_Mix.mp3', 'Track1_Success.mp3', 'Track2_Success.mp3', 'Track_Fail.mp3'];
+
 const hasLoop = [true, true, true, true, true, true, true, true, false, false, false, false, false, false, false];
 const soundClasses = [1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0];
 const scores = [0, 0, 0]
 const audioBuffers = [];
 const sources = [];
+const gains = [];
+let numPlaying = 0;
+const fadeTime = 0.1;
+let loopDuration = 9.6;
 
 window.addEventListener('mousedown', onPress);
 window.addEventListener('touchstart', onPress);
+
+validateButton.addEventListener('click', onValidate);
 
 // load audio buffers (samples)
 for (let i = 0; i < sounds.length; i++) {
@@ -26,35 +38,44 @@ for (let i = 0; i < sounds.length; i++) {
 }
 
 // play buffer by index
-function startSound(index) {
+function startSound(index, loop, loopDuration, inPhase) {
 
   const time = audioContext.currentTime;
 
-  const loop = hasLoop[index];
+
+  const gain = audioContext.createGain();
+  gain.connect(audioContext.destination);
+  gain.gain.setValueAtTime(0, time);
+  gain.gain.linearRampToValueAtTime(1, time+fadeTime);
+
   const source = audioContext.createBufferSource();
   const buffer = audioBuffers[index];
   let offset = 0;
-  const fadeTime = 5;
 
-  if (loop) {
-    offset = time % (buffer.duration);
+  if (inPhase) {
+    offset = time % (loopDuration);
   }
 
-  source.connect(audioContext.destination);
+  source.connect(gain);
   source.buffer = buffer;
   source.loop = loop;
   source.start(time, offset);
 
   if (loop) {
     sources[index] = source;
+    gains[index] = gain;
   }
 }
 
 function stopSound(index) {
   const source = sources[index];
+  const gain = gains[index];
+  const time = audioContext.currentTime;
 
   if (source) {
-    source.stop(audioContext.currentTime);
+    gain.gain.setValueAtTime(1, time);
+    gain.gain.linearRampToValueAtTime(0, time+fadeTime);
+    source.stop(time + fadeTime);
     sources[index] = null;
   }
 }
@@ -74,14 +95,24 @@ function onPress(evt) {
     if (sources[index]) {
 
       scores[classIndex]--;
+      numPlaying--;
+
+      if (numPlaying<4){
+        validateButton.classList.remove ("active");
+      }
 
       stopSound(index);
       target.classList.remove('active');
     } else {
-      startSound(index);
+      const loop = hasLoop[index];
+      startSound(index, loop, loopDuration, loop);
       target.classList.add('active');
 
       scores[classIndex]++;
+      numPlaying++;
+      if (numPlaying>=4){
+        validateButton.classList.add ("active");
+      }
 
       if (!hasLoop[index]) {
         setTimeout(() => target.classList.remove('active'), 250);
@@ -95,7 +126,39 @@ function onPress(evt) {
   evt.preventDefault();
 }
 
+function onValidate (){
+  if (numPlaying>=4) {
+    let validateClass = 0;
+    if (scores[1] === 4 && numPlaying === 4) {
+      startSound(12, false, loopDuration, true);
+      validateClass = 1;
+    } else if (scores[2] === 4 && numPlaying === 4) {
+      startSound(13, false, loopDuration, true);
+      validateClass = 2
+    } else {
+      startSound(14, false, loopDuration, true);
+    }
+    numPlaying = 0;
+    validateButton.classList.remove ("active");
+    validateSounds(12, -1);
+    scores[0] = 0;
+    scores[1] = 0;
+    scores[2] = 0;
+  }
+}
 
+function validateSounds(num, validateClass) {
+  for (let i = 0; i<num; i++) {
+    const soundClass = soundClasses[i];
+    stopSound(i);
+    const button = document.querySelector(`[data-index="${i}"]`);
+    if(soundClass===validateClass) {
+      button.classList.add ("valid");
+    } else{
+      button.classList.add("invalid");
+    }
+  }
+}
 
 // 'const AudioContext = window.AudioContext || window.webkitAudioContext;
 // let audioContext = null;
