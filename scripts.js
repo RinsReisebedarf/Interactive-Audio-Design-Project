@@ -10,7 +10,7 @@ const sounds = ['Track1_1.mp3', 'Track1_2.mp3', 'Track1_3.mp3', 'Track1_4.mp3', 
 'Ambi1.mp3', 'Ambi2.mp3', 'Dolphin.mp3', 'Pfiff_Mix.mp3', 'Track1_Success.mp3', 'Track2_Success.mp3', 'Track_Fail.mp3'];
 
 const hasLoop = [true, true, true, true, true, true, true, true, false, false, false, false, false, false, false];
-const soundClasses = [1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0];
+const soundClasses = [1, 1, 1, 1, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0];
 const scores = [0, 0, 0]
 const audioBuffers = [];
 const sources = [];
@@ -41,8 +41,6 @@ for (let i = 0; i < sounds.length; i++) {
 function startSound(index, loop, loopDuration, inPhase) {
 
   const time = audioContext.currentTime;
-
-
   const gain = audioContext.createGain();
   gain.connect(audioContext.destination);
   gain.gain.setValueAtTime(0, time);
@@ -109,18 +107,19 @@ function onPress(evt) {
       target.classList.add('active');
 
       scores[classIndex]++;
-      numPlaying++;
-      if (numPlaying>=4){
-        validateButton.classList.add ("active");
+      
+      if (hasLoop[index]) {
+        numPlaying++;
+        if (numPlaying>=4){
+          validateButton.classList.add ("active");
+        }
       }
-
-      if (!hasLoop[index]) {
+      else {
         setTimeout(() => target.classList.remove('active'), 250);
       }
     }
 
     console.log("scores:",scores);
-
   }
 
   evt.preventDefault();
